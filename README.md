@@ -6,7 +6,7 @@ Requisitos:
 
 - Tener Proxmo instalado en un servidor dedicado al cual llamaré "Proxmox"
 - Saber la ip de nuestro servidor Proxmox
-- Tener una segunda máquina donde instalar Ansbile la cual llamaré "controlador"
+- Tener una segunda máquina donde instalar Ansbile la cual llamaré "controlador" con OS Centos
 - Accesso al usuario root en ambas máquinas
 - Poder acceder al GUI de Proxmox desde cualquier navegador
 
