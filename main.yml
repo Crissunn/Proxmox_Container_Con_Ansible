@@ -37,7 +37,6 @@
       register: container_info # Save the result of the task in a variable
 
 
-
     - name: make sure container is started
       proxmox:
         vmid: "{{ container_id  }}"
@@ -45,10 +44,10 @@
         api_password: "{{ pmx_api_password }}"
         api_host: "{{ pmx_api_host }}"
         state: started
-        
+
     - name: Wait for the Container
       pause:
-        seconds: 30            
+        seconds: 30        
 
     - name: Get Container IP
       shell: pct exec "{{ container_id  }}" ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1
@@ -61,7 +60,7 @@
 
     - name: Add container 
       lineinfile:
-        path: /etc/ansible/hosts
+        path: Users/cristiangomez/Documents/DevOps/Ansible_controll/inventory.txt
         line: "container1 ansible_host={{ ip_container }} ansible_user=root"
         create: true
       become: true
@@ -72,8 +71,12 @@
         key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
       register: authorized_key_result
 
+    - name: show aut key
+      debug:
+        var: authorized_key_result.key
+
     - name: Add authorized key to container
-      shell: pct exec "{{ container_id  }}" bash -c 'echo "{{ authorized_key_result.key }}" >> ~/.ssh/authorized_keys'
+      shell: pct exec "{{ container_id  }}" -- bash -c 'echo "{{ authorized_key_result.key }}" >> ~/.ssh/authorized_keys'
       changed_when: false
 
 
