@@ -120,17 +120,6 @@ El output será similar a:
 204        running                 container1
 ```
 
-Despues crreremos el siguiente comando para obtener la ip de nuestro nuevo contenedor:
 
-```
-pct exec 204 ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1
-```
-
-Finalmente, corremos el script invupd.sh proporcionando la IP que recién obtuvimos como el primer parámetro:
-
-```
-chmod 755 invupd.sh
-bash invupd.sh ip
-```
 
 ### Felicitaciones ahora ya tienes Ansible configurado para correr playbooks en tu servidor Proxmox y en el contenedor recién creado en Proxmox
