@@ -98,3 +98,39 @@ PLAY RECAP *********************************************************************
 pve                        : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 ```
+
+
+### Configurar Proxmox contenedor con Ansible
+
+Ya que tenemos nuestro contenedor corriendo y para validar que es así, nos conectaremos a Proxmox mediante ssh:
+
+```
+ssh root@ip_proxmox
+```
+
+Ya conectados en la terminal de Proxmox corremos el siguiente comando:
+
+```
+pct list
+```
+
+El output será similar a:
+
+```
+204        running                 container1
+```
+
+Despues crreremos el siguiente comando para obtener la ip de nuestro nuevo contenedor:
+
+```
+pct exec 100 ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1
+```
+
+Finalmente, corremos el script invupd.sh proporcionando la IP que recién obtuvimos como el primer parámetro:
+
+```
+chmod 755 invupd.sh
+bash invupd.sh ip
+```
+
+### Felicitaciones 
