@@ -133,4 +133,4 @@ chmod 755 invupd.sh
 bash invupd.sh ip
 ```
 
-### Felicitaciones ahora ya tienes Ansible configurado para correr playbooks en tu servidor Proxmox y en elc ontenedor recien creado en Proxmox
+### Felicitaciones ahora ya tienes Ansible configurado para correr playbooks en tu servidor Proxmox y en el contenedor recién creado en Proxmox
