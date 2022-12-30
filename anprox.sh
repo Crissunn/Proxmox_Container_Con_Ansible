@@ -50,12 +50,12 @@ print_color "green" "Provide Proxmox IP"
 read -p "Enter the Proxmox IP address: " ip_address
 read -s -p "Enter the root proxmox password: " password
 
-print_color "green" "Generating SSH pair keys"
+print_color "green" "Generating SSH pair keys, please save them as id_rsa and with empty passphrase"
 ssh-keygen -t rsa
 check_exit_code "SSH keys"
 
 print_color "green" "Copy ssh pub key to $ip_address"
-yum install sshpass -y
+yum install sshpass -y -f /root/.shh
 sshpass -p $password ssh-copy-id root@$ip_address
 check_exit_code "SSH pub key copy"
 
