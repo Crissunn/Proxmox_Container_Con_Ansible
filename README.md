@@ -26,7 +26,7 @@ bash anprox.sh
 Una vez terminada la ejecución del script, tendremos que validar que las configuraciones se hicieron de manera correcta para poder correr playbooks desde el controlador en Proxmox. Para eso corremos el siguiente comando.
 
 ```
-ansible -i inventory.txt pve -m ping
+ansible pve -m ping
 ```
 
 Si la ejecución es exitosa veremos un output como el siguiente:
