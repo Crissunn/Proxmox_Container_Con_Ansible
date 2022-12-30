@@ -120,6 +120,11 @@ El output será similar a:
 204        running                 container1
 ```
 
+Finalmente validaremos que Ansible pueda correr playbooks en el contenedor que recien creamos corriendo el siguiente comando:
+
+```
+ansible container1 -m ping
+```
 
 
 ### Felicitaciones ahora ya tienes Ansible configurado para correr playbooks en tu servidor Proxmox y en el contenedor recién creado en Proxmox
