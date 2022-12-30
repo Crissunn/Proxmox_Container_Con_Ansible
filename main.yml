@@ -60,7 +60,7 @@
 
     - name: Add container 
       lineinfile:
-        path: Users/cristiangomez/Documents/DevOps/Ansible_controll/inventory.txt
+        path: /etc/ansible/hosts
         line: "container1 ansible_host={{ ip_container }} ansible_user=root"
         create: true
       become: true
