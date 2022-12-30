@@ -48,15 +48,14 @@ check_exit_code "Ansible proxmox request installation"
 
 print_color "green" "Provide Proxmox IP"
 read -p "Enter the Proxmox IP address: " ip_address
-read -s -p "Enter the root proxmox password: " password
 
 print_color "green" "Generating SSH pair keys, please save them as id_rsa and with empty passphrase"
-ssh-keygen -t rsa -b 4096 -f /root/
+ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa
 check_exit_code "SSH keys"
 
 print_color "green" "Copy ssh pub key to $ip_address"
 yum install sshpass -y 
-ssh-copy-id -p $password -i /root/*.pub root@$ip_address
+ssh-copy-id -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa.pub root@$ip_address
 check_exit_code "SSH pub key copy"
 
 
@@ -71,7 +70,7 @@ check_exit_code "Ansible proxmox request installation"
 print_color "green" "Create Ansible inventory file"
 touch /etc/ansible/hosts
 echo "[Proxmox]" >> /etc/ansible/hosts
-echo "pve ansible_host=$ip_address ansible_user=ansible" >> /etc/ansible/hosts
+echo "pve ansible_host=$ip_address ansible_user=root" >> /etc/ansible/hosts
 check_exit_code "Ansible inventory"
 
 
