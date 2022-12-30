@@ -63,7 +63,6 @@
         path: /etc/ansible/hosts
         line: "container1 ansible_host={{ ip_container }} ansible_user=root"
         create: true
-      become: true
 
     - name: Copy SSH public key
       authorized_key:
@@ -71,9 +70,6 @@
         key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
       register: authorized_key_result
 
-    - name: show aut key
-      debug:
-        var: authorized_key_result.key
 
     - name: Add authorized key to container
       shell: pct exec "{{ container_id  }}" -- bash -c 'echo "{{ authorized_key_result.key }}" >> ~/.ssh/authorized_keys'
