@@ -6,7 +6,7 @@ Requisitos:
 
 - Tener Proxmo instalado en un servidor dedicado al cual llamaré "Proxmox"
 - Saber la ip de nuestro servidor Proxmox
-- Tener una segunda máquina donde instalar Ansbile la cual llamaré "controlador" con OS Centos
+- Tener una segunda máquina donde instalar Ansbile la cual llamaré "controlador"
 - Accesso al usuario root en ambas máquinas
 - Poder acceder al GUI de Proxmox desde cualquier navegador
 
@@ -39,5 +39,62 @@ pve | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
+
+```
+
+### Crear Proxmox Container con Ansible
+
+Primeramente debemos editar el archivo que tiene el host, usuario y contraseña de Proxmox, el mismo se enceuntra en /roles/vars/main.yml
+
+```
+pmx_api_host: 'ip'  ### La ip de tu servidor Proxmox comunmente es: 192.168.100.2
+pmx_api_user: 'root@pam' ### Usuario root de Proxmox
+pmx_api_password: 'Password' ### Contraseña root de Proxmox
+```
+
+En el archivo tenemos información sensible que debemos proteger, vamos a encriptarla usando Ansible vault, para eso primeramente nos movemos al directory /roles/vars/ y corremos el siguiente comando:
+
+```
+ansible-vault encrypt main.yml
+```
+Ingresa la contraseña de su agrado para encriptar nuestro archivo. Ahora nos regresamos el directorio Proxmox_Container_Con_Ansible.
+
+
+Antes de correr nuestro playbook que creara un contenedor en Proxmox, dicho contenedor contará con:
+
+- ID 204
+- 'container1' como nombre de contenedor
+- 1 cpu
+- 1024 de RAM
+- 512 SWAP
+- 16 GB 
+
+Ahora para crear nuestro contenedor corremos el siguiente comando:
+
+```
+ansible-playbook main.yml --ask-vault-pass 
+```
+
+El output que obtendremos sera similar a:
+
+```
+TASK [Show current status of container] **************************************************************************************************************************************************************************************************************************************************************************************
+ok: [pve] => {
+    "container_info": {
+        "changed": true,
+        "deprecations": [
+            {
+                "collection_name": "community.general",
+                "msg": "The default value `false` for the parameter \"unprivileged\" is deprecated and it will be replaced with `true`",
+                "version": "7.0.0"
+            }
+        ],
+        "failed": false,
+        "msg": "Deployed VM 204 from template local:vztmpl/centos-8-stream-default_20220327_amd64.tar.xz"
+    }
+}
+
+PLAY RECAP *******************************************************************************************************************************************************************************************************************************************************************************************************************
+pve                        : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 ```
