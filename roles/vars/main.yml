@@ -1,0 +1,5 @@
+pmx_api_host: 'ip'
+pmx_api_user: 'root@pam'
+pmx_api_password: 'Password'
+ 
+

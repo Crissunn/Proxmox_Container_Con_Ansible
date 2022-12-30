@@ -1,0 +1,57 @@
+--- 
+- hosts: pve 
+  become: true
+  become_user: root
+  tasks:
+    
+    - name: Include role
+      ansible.builtin.include_role:
+        name: vars
+
+    - name: Include variables vault from a file
+      ansible.builtin.include_vars:
+        file: roles/vars/main.yml
+
+    - name: Create a container with DHCP for automatic IP assignment
+      proxmox:
+        vmid: 204 # Specify the ID of the container
+        api_user: "{{ pmx_api_user }}" # Proxmox user
+        api_password: "{{ pmx_api_password }}" # Password in plaintext !!!
+        api_host: "{{ pmx_api_host }}" # Proxmox hostname
+        password: "{{ pmx_api_password }}" # Password in plaintext !!!
+        hostname: 'container1' # Specify the hostname of the container
+        node: 'pve' # Specify the name of the Proxmox host
+        cores: '1' # Specify the number of cores to allocate to the container
+        cpus: '1' # Specify the number of CPUs to allocate to the container
+        cpuunits: '1000' # Specify the CPU units to allocate
+        ostemplate: 'local:vztmpl/centos-8-stream-default_20220327_amd64.tar.xz' # Specify the template to use for the operating system
+        storage: 'local-lvm' # Specify the storage location
+        disk: '16' # Specify the size of the disk
+        memory: '1024' # Specify the amount of memory to allocate
+        swap: 512 # Specify the size of the swap partition
+        onboot: 1 # Specify that the container should be automatically started on boot
+        netif: '{"net0":"name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0"}' # Configure the network interface to use DHCP for automatic IP assignment
+        state: 'present' # Specify the desired state of the container
+      register: container_info # Save the result of the task in a variable
+
+
+
+    - name: make sure container is started
+      proxmox:
+        vmid: 204
+        api_user: "{{ pmx_api_user }}"
+        api_password: "{{ pmx_api_password }}"
+        api_host: "{{ pmx_api_host }}"
+        state: started
+
+
+
+    - name: Show current status of container
+      ansible.builtin.debug:
+        var: container_info
+
+
+
+
+
+      
