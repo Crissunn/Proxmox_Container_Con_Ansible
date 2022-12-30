@@ -34,7 +34,10 @@ if [ "$(whoami)" != "root" ]; then
 
 fi
 
-
+print_color "green" "Copy ssh pub key to $1"
+yum install sshpass -y 
+ssh-copy-id -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa.pub root@$1
+check_exit_code "SSH pub key copy"
 
 print_color "green" "Adding Container to Ansible Inventory"
 echo "[Container]" >> /etc/ansible/hosts
