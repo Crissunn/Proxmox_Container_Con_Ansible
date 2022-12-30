@@ -20,7 +20,7 @@ print_color(){
 
 check_exit_code() {
   if [ $? -eq 0 ]; then
-    print_color "green" "The $1 was successful"
+    print_color "green" "The $1 was successfully"
   else
     print_color "red" "The $1 failed"
   fi
@@ -43,7 +43,7 @@ yum install epel-release
 yum install ansible -y 
 check_exit_code "Ansible installation"
 
-pip install proxmoxer requests
+pip3 install proxmoxer requests
 check_exit_code "Ansible proxmox request installation"
 
 print_color "green" "Provide Proxmox IP"
