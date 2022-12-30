@@ -45,7 +45,10 @@
         api_password: "{{ pmx_api_password }}"
         api_host: "{{ pmx_api_host }}"
         state: started
-            
+        
+    - name: Wait for the Container
+      pause:
+        seconds: 30            
 
     - name: Get Container IP
       shell: pct exec "{{ container_id  }}" ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1
