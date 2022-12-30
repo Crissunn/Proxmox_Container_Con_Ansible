@@ -1,5 +1,7 @@
 --- 
 - hosts: pve 
+  vars:
+    container_id: 204
   become: true
   become_user: root
   tasks:
@@ -14,7 +16,7 @@
 
     - name: Create a container with DHCP for automatic IP assignment
       proxmox:
-        vmid: 204 # Specify the ID of the container
+        vmid: "{{ container_id  }}" # Specify the ID of the container
         api_user: "{{ pmx_api_user }}" # Proxmox user
         api_password: "{{ pmx_api_password }}" # Password in plaintext !!!
         api_host: "{{ pmx_api_host }}" # Proxmox hostname
@@ -38,16 +40,42 @@
 
     - name: make sure container is started
       proxmox:
-        vmid: 204
+        vmid: "{{ container_id  }}"
         api_user: "{{ pmx_api_user }}"
         api_password: "{{ pmx_api_password }}"
         api_host: "{{ pmx_api_host }}"
         state: started
+            
 
+    - name: Get Container IP
+      shell: pct exec "{{ container_id  }}" ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d '/' -f 1
+      changed_when: false
+      register: ip_container
+
+    - name: Install SSH 
+      shell: pct exec "{{ container_id  }}" -- bash -c  "yum install openssh-server openssh-clients -y && systemctl start sshd && systemctl enable sshd"
+      changed_when: false
+
+    - name: Add container 
+      lineinfile:
+        path: /etc/ansible/hosts
+        line: "container1 ansible_host={{ ip_container }} ansible_user=root"
+        create: true
+      become: true
+
+    - name: Copy SSH public key
+      authorized_key:
+        user: root
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      register: authorized_key_result
+
+    - name: Add authorized key to container
+      shell: pct exec "{{ container_id  }}" bash -c 'echo "{{ authorized_key_result.key }}" >> ~/.ssh/authorized_keys'
+      changed_when: false
 
 
     - name: Show current status of container
-      ansible.builtin.debug:
+      debug:
         var: container_info
 
 
